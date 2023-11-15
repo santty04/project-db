@@ -2,23 +2,23 @@ const Sequelize = require('sequelize');
 const table = require('../models/table'); 
 const Restaurant = require('../models/restaurant');
 
-const fechaEspecifica = '2023-12-16';
+const fechaEspecifica = '2024-01-05 19:00:00-05';
 
 
-async function countTable() {
+async function countTable(req, res) {
     try{
         table.count({
             where: {
-              fechaReserva: fechaEspecifica,
+              tableReservationDate: fechaEspecifica,
             },
-            include: [
-              {
-                model: Restaurant,
-                where: { id: Sequelize.col('table.idRestaurant') },
-              },
-            ],
-          }).then((cantidadMesasReservadas) => {
-            console.log(`En el crucero hay ${cantidadMesasReservadas} mesas reservadas en la fecha ${fechaEspecifica}`);
+            include: {
+              model: Restaurant
+            }
+            
+          }).then((data) => {
+            return res.status(200).json({
+              data: data,
+            });
           }).catch((error) => {
             console.error('Error al contar mesas reservadas:', error);
           });
